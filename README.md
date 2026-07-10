@@ -13,7 +13,7 @@ He thong quan ly Fanpage Facebook tu dong — tich hop Chatbot AI cham soc khach
 5. [Cai dat bang Docker](#cai-dat-bang-docker)
 6. [Cau hinh bien moi truong](#cau-hinh-bien-moi-truong)
 7. [Ket noi Facebook Webhook](#ket-noi-facebook-webhook)
-8. [Dung DeepSeek thay vi OpenAI](#dung-deepseek-thay-vi-openai)
+8. [Cau hinh AI Provider (Gemini / DeepSeek / OpenAI)](#cau-hinh-ai-provider)
 9. [API Reference](#api-reference)
 10. [Troubleshooting](#troubleshooting)
 
@@ -194,27 +194,21 @@ Sao chep `.env.example` thanh `.env.local` va dien day du cac gia tri:
 ```env
 # ===== Facebook App =====
 # Lay tai: https://developers.facebook.com > App > Settings > Basic
-FB_APP_ID=123456789
-FB_APP_SECRET=abc123...
+FB_APP_ID=1388459879837006
+FB_APP_SECRET=your_app_secret_here
 
 # ===== Facebook Page =====
 # Lay Page Access Token tai: Graph API Explorer > chon Page > generate token
-FB_PAGE_ACCESS_TOKEN=EAABsb...
-FB_PAGE_ID=123456789012345
+FB_PAGE_ACCESS_TOKEN=your_page_access_token_here
+FB_PAGE_ID=1198955446627869
 
 # ===== Facebook Webhook =====
 # Dat chuoi bat ky, dung khi dang ky webhook
-FB_WEBHOOK_VERIFY_TOKEN=my-secret-token-2026
+FB_WEBHOOK_VERIFY_TOKEN=your_random_verify_token_here
 
-# ===== AI Provider (chon 1 trong 2) =====
-
-# --- OpenAI (mac dinh) ---
-OPENAI_API_KEY=sk-...
-
-# --- DeepSeek (re hon, chi can bo comment 2 dong duoi) ---
-# OPENAI_BASE_URL=https://api.deepseek.com/v1
-# OPENAI_API_KEY=sk-deepseek-...
-# AI_MODEL=deepseek-chat
+# ===== Vercel AI Gateway (Gemini 2.5 Pro) =====
+# Lay key tai: https://vercel.com/~/ai/api-keys
+AI_GATEWAY_API_KEY=your_ai_gateway_api_key_here
 ```
 
 ### Cach lay Page Access Token
@@ -283,23 +277,31 @@ curl -X POST https://your-domain.com/api/webhook/facebook \
 
 ---
 
-## Dung DeepSeek thay vi OpenAI
+## Cau hinh AI Provider
 
-DeepSeek tuong thich API voi OpenAI va re hon nhieu. Chi can thay doi 3 bien:
+He thong su dung **Vercel AI Gateway** voi mo hinh mac dinh la `google/gemini-2.5-pro`. Chi can mot bien duy nhat:
 
 ```env
-OPENAI_BASE_URL=https://api.deepseek.com/v1
-OPENAI_API_KEY=sk-your-deepseek-api-key
-AI_MODEL=deepseek-chat
+AI_GATEWAY_API_KEY=your_ai_gateway_api_key_here
 ```
 
-Lay API Key DeepSeek tai: [platform.deepseek.com](https://platform.deepseek.com)
+Lay key tai: [vercel.com/~/ai/api-keys](https://vercel.com/~/ai/api-keys)
+
+### So sanh cac mo hinh co the dung
 
 | Model | Chi phi (approx.) | Khuyen dung cho |
 |-------|-------------------|-----------------|
-| `gpt-4o-mini` | ~$0.15/1M tokens | OpenAI, can doc tieng Anh tot |
-| `deepseek-chat` | ~$0.014/1M tokens | CSKH tieng Viet, tiet kiem nhat |
-| `gpt-4o` | ~$2.5/1M tokens | Can chat luong cao nhat |
+| `google/gemini-2.5-pro` | ~$1.25/1M tokens | **Mac dinh** — chat luong cao, hieu tieng Viet tot |
+| `google/gemini-2.5-flash` | ~$0.075/1M tokens | Nhanh hon, re hon, phu hop CSKH |
+| `anthropic/claude-sonnet-4-5` | ~$3/1M tokens | Kha nang suy luan phuc tap |
+| `openai/gpt-4o-mini` | ~$0.15/1M tokens | Lua chon OpenAI tiet kiem |
+
+De doi mo hinh, sua dong `model:` trong `lib/ai.ts`:
+
+```ts
+// Doi sang Gemini Flash (nhanh va re hon)
+model: 'google/gemini-2.5-flash',
+```
 
 ---
 
@@ -375,8 +377,9 @@ Kiem tra gia tri `FB_WEBHOOK_VERIFY_TOKEN` trong `.env.local` phai giong het voi
 
 ### Loi: "AI API error"
 
-- Voi OpenAI: kiem tra `OPENAI_API_KEY` con hieu luc va tai khoan con credit.
-- Voi DeepSeek: kiem tra `OPENAI_BASE_URL` chinh xac la `https://api.deepseek.com/v1` (khong co dau `/` cuoi).
+- Kiem tra `AI_GATEWAY_API_KEY` da duoc dat dung trong `.env.local`.
+- Vao [vercel.com/~/ai/api-keys](https://vercel.com/~/ai/api-keys) kiem tra key con hieu luc va chua het han.
+- Neu dung Vercel local (khong deploy), dam bao key duoc tao dung cho moi truong development.
 
 ---
 
