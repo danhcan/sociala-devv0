@@ -8,7 +8,7 @@ import {
   CalendarDays,
   Settings,
   Bot,
-  Share2,
+  Globe,
   ChevronRight,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -28,7 +28,7 @@ export function Sidebar() {
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-5 border-b border-sidebar-border">
         <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-primary">
-          <Share2 className="w-5 h-5 text-primary-foreground" strokeWidth={2.5} />
+          <Globe className="w-5 h-5 text-primary-foreground" strokeWidth={2.5} />
         </div>
         <div>
           <p className="text-sm font-bold text-sidebar-foreground leading-tight">SocialAI</p>
